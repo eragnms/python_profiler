@@ -1,2 +1,2 @@
-# python_profiler
+# simple_profiler
 A simple python profiler module
