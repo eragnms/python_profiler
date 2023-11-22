@@ -2,8 +2,8 @@
 from setuptools import setup
 
 setup(
-    name='simpleprofiler',
-    version='0.0.7',
-    packages=['simpleprofiler'],
-    install_requires=[],
+    name="simpleprofiler",
+    version="0.0.15",
+    packages=["simpleprofiler"],
+    install_requires=["tabulate"],
 )

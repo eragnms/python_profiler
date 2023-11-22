@@ -11,8 +11,10 @@ A simple python profiler module
     profiler = SimpleProfiler()
 
     def main()
+       profiler.start_total()
        profiler.start("test")
        while True
           break
        profiler.stop("test")
+       profiler.stop_total()
        profiler.print_stats()
