@@ -3,7 +3,7 @@ A simple python profiler module
 
 ## Installation
 
-    pipenv install -e ../../simpleprofiler
+    pipenv install ../../simpleprofiler
 
 ## Usage
 

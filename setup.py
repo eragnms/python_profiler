@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name='simpleprofiler',
-    version='0.0.1',
+    version='0.0.7',
     packages=['simpleprofiler'],
     install_requires=[],
 )
