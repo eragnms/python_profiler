@@ -21,14 +21,20 @@ class ProfileStats:
         if self.total > 0:
             info = f"{self.name}: "
             info += f"accumulated {self.elapsed:.3f}s"
-            info += f", per call {self.elapsed/self.num_calls:.3f}s"
+            if self.num_calls > 0:
+                info += f", per call {self.elapsed/self.num_calls:.3f}s"
+            else:
+                info += f", per call 0s"
             info += f", {self.num_calls} calls"
             info += f", {self.elapsed/self.total*100:.2f}% of total"
             return info
         else:
             info = f"{self.name}: "
             info += f"accumulated {self.elapsed:.3f}s"
-            info += f", per call {self.elapsed/self.num_calls:.3f}s"
+            if self.num_calls > 0:
+                info += f", per call {self.elapsed/self.num_calls:.3f}s"
+            else:
+                info += f", per call 0s"
             info += f", {self.num_calls} calls"
             return info
 
@@ -74,49 +80,50 @@ class SimpleProfiler:
     def print_stats(self):
         """Print profiling stats."""
         total = 0.0
+        sorted_stats = dict(sorted(self._stats.items(), key=lambda item: item[1].elapsed, reverse=True))
         if self._total_stats is not None:
             total = self._total_stats.elapsed
             headers = [
                 "Name",
-                "Accumulated [s]",
+                "Accumulated [ms]",
                 "Num calls",
-                "Per call [s]",
+                "Per call [ms]",
                 "Part of total [%]",
             ]
             data = []
             data.append(
                 [
                     self._total_stats.name,
-                    self._total_stats.elapsed,
+                    self._total_stats.elapsed * 1000,
                     self._total_stats.num_calls,
-                    self._total_stats.elapsed / self._total_stats.num_calls,
+                    self._total_stats.elapsed / self._total_stats.num_calls * 1000,
                     100,
                 ]
             )
-            for stat in self._stats:
+            for stat in sorted_stats:
                 data.append(
                     [
-                        self._stats[stat].name,
-                        self._stats[stat].elapsed,
-                        self._stats[stat].num_calls,
-                        self._stats[stat].elapsed / self._stats[stat].num_calls,
-                        self._stats[stat].elapsed / total * 100,
+                        sorted_stats[stat].name,
+                        sorted_stats[stat].elapsed * 1000,
+                        sorted_stats[stat].num_calls,
+                        sorted_stats[stat].elapsed / sorted_stats[stat].num_calls * 1000,
+                        sorted_stats[stat].elapsed / total * 100,
                     ]
                 )
-                table = tabulate(
-                    data, headers, floatfmt=(".3f", ".3f", ".0f", ".3f", ".2f")
-                )
+            table = tabulate(
+                data, headers, floatfmt=(".1f", ".1f", ".0f", ".1f", ".1f")
+            )
         else:
-            headers = ["Name", "Accumulated [s]", "Num calls", "Per call [s]"]
+            headers = ["Name", "Accumulated [ms]", "Num calls", "Per call [ms]"]
             data = []
-            for stat in self._stats:
+            for stat in sorted_stats:
                 data.append(
                     [
-                        self._stats[stat].name,
-                        self._stats[stat].elapsed,
-                        self._stats[stat].num_calls,
-                        self._stats[stat].elapsed / self._stats[stat].num_calls,
+                        sorted_stats[stat].name,
+                        sorted_stats[stat].elapsed * 1000,
+                        sorted_stats[stat].num_calls,
+                        sorted_stats[stat].elapsed / sorted_stats[stat].num_calls * 1000,
                     ]
                 )
-                table = tabulate(data, headers, floatfmt=(".3f", ".3f", ".0f", ".3f"))
+            table = tabulate(data, headers, floatfmt=(".1f", ".1f", ".0f", ".1f"))
         print(table)

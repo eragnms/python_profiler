@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name="simpleprofiler",
-    version="0.0.15",
+    version="0.0.18",
     packages=["simpleprofiler"],
     install_requires=["tabulate"],
 )
