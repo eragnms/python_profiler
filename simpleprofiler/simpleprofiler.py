@@ -80,7 +80,9 @@ class SimpleProfiler:
     def print_stats(self):
         """Print profiling stats."""
         total = 0.0
-        sorted_stats = dict(sorted(self._stats.items(), key=lambda item: item[1].elapsed, reverse=True))
+        sorted_stats = dict(
+            sorted(self._stats.items(), key=lambda item: item[1].elapsed, reverse=True)
+        )
         if self._total_stats is not None:
             total = self._total_stats.elapsed
             headers = [
@@ -106,7 +108,9 @@ class SimpleProfiler:
                         sorted_stats[stat].name,
                         sorted_stats[stat].elapsed * 1000,
                         sorted_stats[stat].num_calls,
-                        sorted_stats[stat].elapsed / sorted_stats[stat].num_calls * 1000,
+                        sorted_stats[stat].elapsed
+                        / sorted_stats[stat].num_calls
+                        * 1000,
                         sorted_stats[stat].elapsed / total * 100,
                     ]
                 )
@@ -122,7 +126,9 @@ class SimpleProfiler:
                         sorted_stats[stat].name,
                         sorted_stats[stat].elapsed * 1000,
                         sorted_stats[stat].num_calls,
-                        sorted_stats[stat].elapsed / sorted_stats[stat].num_calls * 1000,
+                        sorted_stats[stat].elapsed
+                        / sorted_stats[stat].num_calls
+                        * 1000,
                     ]
                 )
             table = tabulate(data, headers, floatfmt=(".1f", ".1f", ".0f", ".1f"))
