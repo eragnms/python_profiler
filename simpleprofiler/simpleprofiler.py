@@ -56,7 +56,6 @@ class SimpleProfiler:
 
     def start(self, name: str, filename: str = ""):
         """Start profiling."""
-        filename = ""
         if name not in self._stats:
             self._stats[name] = ProfileStats(
                 name=name,
