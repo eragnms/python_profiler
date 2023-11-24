@@ -54,10 +54,9 @@ class SimpleProfiler:
         self._stats = {}
         self._total_stats = None
 
-    def start(self, name: str):
+    def start(self, name: str, filename: str = ""):
         """Start profiling."""
-        caller_frame = inspect.stack()[1]
-        filename = caller_frame[1]
+        filename = ""
         if name not in self._stats:
             self._stats[name] = ProfileStats(
                 name=name,
@@ -70,10 +69,8 @@ class SimpleProfiler:
         else:
             self._stats[name].start_time = time.perf_counter()
 
-    def start_total(self):
+    def start_total(self, filename: str = ""):
         """Start total profiling."""
-        caller_frame = inspect.stack()[1]
-        filename = caller_frame[1]
         self._total_stats = ProfileStats(
             name="TOTAL",
             start_time=time.perf_counter(),
