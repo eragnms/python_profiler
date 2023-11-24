@@ -1,6 +1,7 @@
 """Profiler module."""
 
 import dataclasses
+import os
 import time
 
 from tabulate import tabulate
@@ -15,6 +16,7 @@ class ProfileStats:
     elapsed: float
     num_calls: int
     total: float = 0.0
+    filename: str = ""
 
     def __str__(self):
         """Return string representation."""
@@ -24,7 +26,7 @@ class ProfileStats:
             if self.num_calls > 0:
                 info += f", per call {self.elapsed/self.num_calls:.3f}s"
             else:
-                info += f", per call 0s"
+                info += ", per call 0s"
             info += f", {self.num_calls} calls"
             info += f", {self.elapsed/self.total*100:.2f}% of total"
             return info
@@ -34,7 +36,7 @@ class ProfileStats:
             if self.num_calls > 0:
                 info += f", per call {self.elapsed/self.num_calls:.3f}s"
             else:
-                info += f", per call 0s"
+                info += ", per call 0s"
             info += f", {self.num_calls} calls"
             return info
 
@@ -51,16 +53,30 @@ class SimpleProfiler:
         self._stats = {}
         self._total_stats = None
 
-    def start(self, name: str):
+    def start(self, name: str, filename: str = ""):
         """Start profiling."""
         if name not in self._stats:
-            self._stats[name] = ProfileStats(name, time.perf_counter(), 0, 0)
+            self._stats[name] = ProfileStats(
+                name=name,
+                start_time=time.perf_counter(),
+                elapsed=0,
+                num_calls=0,
+                total=0,
+                filename=os.path.basename(filename),
+            )
         else:
             self._stats[name].start_time = time.perf_counter()
 
-    def start_total(self):
+    def start_total(self, filename: str = ""):
         """Start total profiling."""
-        self._total_stats = ProfileStats("TOTAL", time.perf_counter(), 0, 0)
+        self._total_stats = ProfileStats(
+            name="TOTAL",
+            start_time=time.perf_counter(),
+            elapsed=0,
+            num_calls=0,
+            total=0,
+            filename=os.path.basename(filename),
+        )
 
     def stop(self, name: str):
         """Stop profiling."""
@@ -91,6 +107,7 @@ class SimpleProfiler:
                 "Num calls",
                 "Per call [ms]",
                 "Part of total [%]",
+                "Filename",
             ]
             data = []
             data.append(
@@ -112,13 +129,14 @@ class SimpleProfiler:
                         / sorted_stats[stat].num_calls
                         * 1000,
                         sorted_stats[stat].elapsed / total * 100,
+                        sorted_stats[stat].filename,
                     ]
                 )
             table = tabulate(
                 data, headers, floatfmt=(".1f", ".1f", ".0f", ".1f", ".1f")
             )
         else:
-            headers = ["Name", "Accumulated [ms]", "Num calls", "Per call [ms]"]
+            headers = ["Name", "Accumulated [ms]", "Num calls", "Per call [ms]", "Filename"]
             data = []
             for stat in sorted_stats:
                 data.append(
