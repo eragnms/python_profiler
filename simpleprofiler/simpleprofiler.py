@@ -149,6 +149,7 @@ class SimpleProfiler:
                         sorted_stats[stat].elapsed
                         / sorted_stats[stat].num_calls
                         * 1000,
+                        sorted_stats[stat].filename,
                     ]
                 )
             table = tabulate(data, headers, floatfmt=(".1f", ".1f", ".0f", ".1f"))
